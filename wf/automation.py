@@ -1,16 +1,15 @@
 import os
-from re import A
-from typing import Set
 import uuid
+from typing import Set
 from urllib.parse import urljoin
 
 import requests
 from latch.account import Account
+from latch.registry.project import Project
+from latch.registry.table import Table
 from latch.resources.tasks import small_task
 from latch.types.directory import LatchDir, LatchOutputDir
 from latch.types.file import LatchFile
-from latch.registry.project import Project
-from latch.registry.table import Table
 
 
 def launch_workflow(
