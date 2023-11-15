@@ -1,4 +1,6 @@
 import os
+from re import A
+from typing import Set
 import uuid
 from urllib.parse import urljoin
 
@@ -7,6 +9,8 @@ from latch.account import Account
 from latch.resources.tasks import small_task
 from latch.types.directory import LatchDir, LatchOutputDir
 from latch.types.file import LatchFile
+from latch.registry.project import Project
+from latch.registry.table import Table
 
 
 def launch_workflow(
@@ -51,78 +55,44 @@ def launch_workflow(
         headers=headers,
         json=data,
     )
-    print(f"Launched workflow {wf_id}:\n {response.json()}")
+    print(f"Launched workflow {wf_id}: {response.json()}")
 
 
 @small_task
-def automation_task(input_directory: LatchDir, automation_id: str) -> None:
-    account = Account.current()
-    automation_project_display_name = "Automations"
+def automation_task(input_directory: LatchDir, wf_id: str, table_id: str) -> None:
+    automation_table = Table(table_id)
 
-    automation_project = next(
-        (
-            project
-            for project in account.list_registry_projects()
-            if project.get_display_name() == automation_project_display_name
-        ),
-        None,
-    )
-    if not automation_project:
-        with account.update() as account_updater:
-            account_updater.upsert_registry_project(
-                display_name=automation_project_display_name
-            )
-        automation_project = next(
-            project
-            for project in account.list_registry_projects()
-            if project.get_display_name() == automation_project_display_name
-        )
-
-    automation_table = next(
-        (
-            table
-            for table in automation_project.list_tables()
-            if table.get_display_name() == f"automation-{automation_id}"
-        ),
-        None,
-    )
-    if not automation_table:
-        with automation_project.update() as automation_project_updater:
-            automation_project_updater.upsert_table(
-                display_name=f"automation-{automation_id}"
-            )
-        automation_table = next(
-            table
-            for table in automation_project.list_tables()
-            if table.get_display_name() == f"automation-{automation_id}"
-        )
-
-    if not automation_table.get_columns().get("Resolved directories", None):
+    if automation_table.get_columns().get("Resolved directories", None) is None:
         with automation_table.update() as automation_table_updater:
             automation_table_updater.upsert_column("Resolved directories", LatchDir)
 
-    resolved_directories = set()
+    resolved_directories: Set[str] = set()
     for page in automation_table.list_records():
         for _, record in page.items():
-            resolved_directories.add(str(record.get_values()["Resolved directories"]))
+            value = record.get_values()["Resolved directories"]
+            assert isinstance(value, str)
+            resolved_directories.add(value)
 
-    output_directory = LatchOutputDir(path=f"{input_directory.remote_path}/Output")
-    for dir in input_directory.iterdir():
+    assert isinstance(input_directory.remote_path, str)
+    output_directory = LatchOutputDir(
+        path=urljoin(input_directory.remote_path, "Output")
+    )
+
+    for child in input_directory.iterdir():
         if (
-            isinstance(dir, LatchFile)
-            or str(dir) == str(output_directory)
-            or str(dir) in resolved_directories
+            isinstance(child, LatchFile)
+            or child.remote_path == output_directory.remote_path
+            or str(child) in resolved_directories
         ):
             continue
 
         with automation_table.update() as automation_table_updater:
-            # NOTE: change wf_id to desired workflow
             launch_workflow(
-                wf_id="255", input_directory=dir, output_directory=output_directory
+                wf_id=wf_id, input_directory=child, output_directory=output_directory
             )
             automation_table_updater.upsert_record(
-                f"{str(uuid.uuid4())[-8:]}",
+                str(uuid.uuid4()),
                 **{
-                    "Resolved directories": dir,
+                    "Resolved directories": child,
                 },
             )

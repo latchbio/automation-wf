@@ -12,11 +12,9 @@ metadata = LatchMetadata(
     parameters={
         "input_directory": LatchParameter(
             display_name="Input Directory",
-            batch_table_column=True,  # Show this parameter in batched mode.
         ),
         "automation_id": LatchParameter(
             display_name="Automation ID",
-            batch_table_column=True,  # Show this parameter in batched mode.
         ),
     },
 )
@@ -26,5 +24,6 @@ metadata = LatchMetadata(
 def automation_workflow(input_directory: LatchDir, automation_id: str) -> None:
     automation_task(
         input_directory=input_directory,
-        automation_id=automation_id,
+        wf_id="FIXME",  # fixme: change wf_id to desired workflow
+        table_id="FIXME",  # fixme: change table_id to desired registry table
     )

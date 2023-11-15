@@ -35,6 +35,3 @@ arg tag
 env FLYTE_INTERNAL_IMAGE $tag
 
 workdir /root
-
-env LATCH_AUTHENTICATION_ENDPOINT=https://nucleus.ligma.ai
-env LATCH_SDK_DOMAIN=ligma.ai
