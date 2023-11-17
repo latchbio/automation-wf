@@ -5,7 +5,6 @@ from urllib.parse import urljoin
 
 import requests
 from latch.account import Account
-from latch.registry.project import Project
 from latch.registry.table import Table
 from latch.resources.tasks import small_task
 from latch.types.directory import LatchDir, LatchOutputDir
@@ -69,18 +68,17 @@ def automation_task(input_directory: LatchDir, wf_id: str, table_id: str) -> Non
     for page in automation_table.list_records():
         for _, record in page.items():
             value = record.get_values()["Resolved directories"]
-            assert isinstance(value, str)
-            resolved_directories.add(value)
+            assert isinstance(value, LatchDir)
+            resolved_directories.add(str(value))
 
-    assert isinstance(input_directory.remote_path, str)
     output_directory = LatchOutputDir(
-        path=urljoin(input_directory.remote_path, "Output")
+        path="latch://<FIXME>"  # fixme: change to remote path of desired output directory
     )
 
     for child in input_directory.iterdir():
         if (
             isinstance(child, LatchFile)
-            or child.remote_path == output_directory.remote_path
+            or str(child) == str(output_directory)
             or str(child) in resolved_directories
         ):
             continue
