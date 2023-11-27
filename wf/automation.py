@@ -16,6 +16,7 @@ def launch_workflow(
     input_directory: LatchDir,
     output_directory: LatchOutputDir,
 ) -> None:
+    ### DO NOT CHANGE BELOW
     token = os.environ["FLYTE_INTERNAL_EXECUTION_ID"]
     nucleus_endpoint = os.environ["LATCH_AUTHENTICATION_ENDPOINT"]
     workspace_id = Account.current().id
@@ -23,11 +24,13 @@ def launch_workflow(
     headers = {
         "Authorization": f"Latch-Execution-Token {token}",
     }
+    ### DO NOT CHANGE ABOVE
 
     data = {
         "account_id": workspace_id,
         "launcher_id": workspace_id,
         "workflow_id": target_wf_id,
+        ### MODIFY WORKFLOW PARAMETERS BELOW
         "params": {
             "input_directory": {
                 "scalar": {
