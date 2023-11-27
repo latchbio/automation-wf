@@ -12,7 +12,7 @@ from latch.types.file import LatchFile
 
 
 def launch_workflow(
-    wf_id: str,
+    target_workflow_id: str,
     input_directory: LatchDir,
     output_directory: LatchOutputDir,
 ) -> None:
@@ -27,7 +27,7 @@ def launch_workflow(
     data = {
         "account_id": workspace_id,
         "launcher_id": workspace_id,
-        "workflow_id": wf_id,
+        "workflow_id": target_workflow_id,
         "params": {
             "input_directory": {
                 "scalar": {
@@ -53,11 +53,16 @@ def launch_workflow(
         headers=headers,
         json=data,
     )
-    print(f"Launched workflow {wf_id}: {response.json()}")
+    print(f"Launched workflow {target_workflow_id}: {response.json()}")
 
 
 @small_task
-def automation_task(input_directory: LatchDir, wf_id: str, table_id: str) -> None:
+def automation_task(
+    input_directory: LatchDir,
+    output_directory: LatchOutputDir,
+    target_workflow_id: str,
+    table_id: str,
+) -> None:
     automation_table = Table(table_id)
 
     if automation_table.get_columns().get("Resolved directories", None) is None:
@@ -71,9 +76,8 @@ def automation_task(input_directory: LatchDir, wf_id: str, table_id: str) -> Non
             assert isinstance(value, LatchDir)
             resolved_directories.add(str(value))
 
-    output_directory = LatchOutputDir(
-        path="latch://<FIXME>"  # fixme: change to remote path of desired output directory
-    )
+    assert isinstance(input_directory.remote_path, str)
+    assert isinstance(output_directory.remote_path, str)
 
     for child in input_directory.iterdir():
         if (
@@ -85,7 +89,9 @@ def automation_task(input_directory: LatchDir, wf_id: str, table_id: str) -> Non
 
         with automation_table.update() as automation_table_updater:
             launch_workflow(
-                wf_id=wf_id, input_directory=child, output_directory=output_directory
+                target_workflow_id=target_workflow_id,
+                input_directory=child,
+                output_directory=output_directory,
             )
             automation_table_updater.upsert_record(
                 str(uuid.uuid4()),

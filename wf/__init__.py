@@ -7,7 +7,7 @@ from wf.automation import automation_task
 metadata = LatchMetadata(
     display_name="Automation Template",
     author=LatchAuthor(
-        name="Ryan Teoh",
+        name="YOUR NAME HERE",
     ),
     parameters={
         "input_directory": LatchParameter(
@@ -24,6 +24,9 @@ metadata = LatchMetadata(
 def automation_workflow(input_directory: LatchDir, automation_id: str) -> None:
     automation_task(
         input_directory=input_directory,
-        wf_id="FIXME",  # fixme: change wf_id to desired workflow
+        output_directory=LatchOutputDir(
+            path="latch://<FIXME>"  # fixme: change to remote path of desired output directory
+        ),
+        target_workflow_id="FIXME",  # fixme: change wf_id to desired workflow
         table_id="FIXME",  # fixme: change table_id to desired registry table
     )
