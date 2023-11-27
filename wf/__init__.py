@@ -27,6 +27,6 @@ def automation_workflow(input_directory: LatchDir, automation_id: str) -> None:
         output_directory=LatchOutputDir(
             path="latch://<FIXME>"  # fixme: change to remote path of desired output directory
         ),
-        target_workflow_id="FIXME",  # fixme: change wf_id to desired workflow
+        target_wf_id="FIXME",  # fixme: change wf_id to desired workflow
         table_id="FIXME",  # fixme: change table_id to desired registry table
     )

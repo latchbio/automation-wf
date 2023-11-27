@@ -12,7 +12,7 @@ from latch.types.file import LatchFile
 
 
 def launch_workflow(
-    target_workflow_id: str,
+    target_wf_id: str,
     input_directory: LatchDir,
     output_directory: LatchOutputDir,
 ) -> None:
@@ -27,7 +27,7 @@ def launch_workflow(
     data = {
         "account_id": workspace_id,
         "launcher_id": workspace_id,
-        "workflow_id": target_workflow_id,
+        "workflow_id": target_wf_id,
         "params": {
             "input_directory": {
                 "scalar": {
@@ -53,14 +53,14 @@ def launch_workflow(
         headers=headers,
         json=data,
     )
-    print(f"Launched workflow {target_workflow_id}: {response.json()}")
+    print(f"Launched workflow {target_wf_id}: {response.json()}")
 
 
 @small_task
 def automation_task(
     input_directory: LatchDir,
     output_directory: LatchOutputDir,
-    target_workflow_id: str,
+    target_wf_id: str,
     table_id: str,
 ) -> None:
     automation_table = Table(table_id)
@@ -89,7 +89,7 @@ def automation_task(
 
         with automation_table.update() as automation_table_updater:
             launch_workflow(
-                target_workflow_id=target_workflow_id,
+                target_wf_id=target_wf_id,
                 input_directory=child,
                 output_directory=output_directory,
             )
