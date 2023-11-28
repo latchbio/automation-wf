@@ -8,7 +8,7 @@ metadata = LatchMetadata(
     # MODIFY NAMING METADATA BELOW
     display_name="Automation Template",
     author=LatchAuthor(
-        name="Taras Priadka",
+        name="Your Name Here",
     ),
     # MODIFY NAMING METADATA ABOVE
     parameters={
