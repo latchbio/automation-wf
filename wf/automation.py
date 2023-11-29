@@ -15,7 +15,6 @@ def automation_task(
     output_directory: LatchOutputDir,
     target_wf_id: str,
     table_id: str,
-    params: dict,
 ) -> None:
     """
     Logic on how to process the input directory and launch the target workflows.
