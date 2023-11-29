@@ -10,12 +10,12 @@ The workflow iterates through all the children of the target input directory, ch
 
 ## Register Workflow
 
-1. Clone this repo with
+1. Clone this repo with:
     ```bash
     git clone https://github.com/latchbio/automation-wf.git
     ```
 
-2. In `__init__.py`, edit `author` and `display_name` in the metadata.
+2. In `__init__.py`, edit `author` and `display_name` in the metadata:
     ```python
     metadata = LatchMetadata(
         # MODIFY NAMING METADATA BELOW
@@ -35,7 +35,7 @@ The workflow iterates through all the children of the target input directory, ch
     )
     ```
 
-3. In `__init__.py`, change `output_directory`, `target_wf_id` and `table_id` in the workflow function.
+3. In `__init__.py`, change `output_directory`, `target_wf_id` and `table_id` in the workflow function:
     ```python
     @workflow(metadata)
     def automation_workflow(input_directory: LatchDir, automation_id: str) -> None:
