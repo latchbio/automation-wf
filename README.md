@@ -2,6 +2,20 @@
 
 Use this template if creating a workflow to be used with automations. Check the [documentation](https://docs.latch.bio/automation/automation-usecase.html) for step-by-step instructions on how to create an automation using this template.
 
+Usage Note:
+- Automations currently are limited to only accepting workflows with the following parameters:
+    ```python
+    parameters={
+                "input_directory": LatchParameter(
+                    display_name="Input Directory",
+                ),
+                "automation_id": LatchParameter(
+                    display_name="Automation ID",
+                ),
+            }
+    ```
+
+
 ## Description
 
 This workflow receives the target `input_directory` and `automation_id` as a parameters. User specifies `target_wf_id` and `table_id` inside of `__init__.py`.
