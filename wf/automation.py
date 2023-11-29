@@ -25,6 +25,27 @@ def automation_task(
     automation_table = Table(table_id)
     processed_directory_column = "Processed Directory"
 
+    # MODIFY THE WORKFLOW PARAMETERS BELOW
+    params = {
+        "input_directory": {
+            "scalar": {
+                "blob": {
+                    "metadata": {"type": {"dimensionality": "MULTIPART"}},
+                    "uri": input_directory.remote_path,
+                }
+            }
+        },
+        "output_directory": {
+            "scalar": {
+                "blob": {
+                    "metadata": {"type": {"dimensionality": "MULTIPART"}},
+                    "uri": output_directory.remote_path,
+                }
+            }
+        },
+    }
+    # MODIFY WORKFLOW PARAMETERS ABOVE
+
     # check if the provided table contains column `Processed Directory` and creates one if it isn't present
     # we use Latch SDK to get the columns of the table and try to get the column by name
     if automation_table.get_columns().get(processed_directory_column, None) is None:
