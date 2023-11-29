@@ -4,7 +4,7 @@ Use this template if creating a workflow to be used with automations. Check the 
 
 **Usage Note**:
 
-Automations currently are limited to only accepting workflows with the following parameters:
+Automations currently are passing fixed parameters to the automation workflow, workflows which are used with automation are required to have the following parameters:
 ```python
 parameters={
             "input_directory": LatchParameter(
