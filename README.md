@@ -10,7 +10,10 @@ The workflow iterates through all the children of the target input directory, ch
 
 ## Register Workflow
 
-1. Clone this repo with `git clone https://github.com/latchbio/automation-wf.git`.
+1. Clone this repo with
+    ```bash
+    git clone https://github.com/latchbio/automation-wf.git
+    ```
 
 2. In `__init__.py`, edit `author` and `display_name` in the metadata.
     ```python
@@ -48,4 +51,7 @@ The workflow iterates through all the children of the target input directory, ch
         )
     ```
 
-4. Register this workflow with: `latch register automation-wf --yes`
+4. Register this workflow with:
+    ```bash
+    latch register automation-wf --yes
+    ```
